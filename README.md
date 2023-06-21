@@ -1,12 +1,15 @@
-# Epic Stack + OpenAI
+# [Epic Stack](https://github.com/epicweb-dev/epic-stack) + [OpenAI](https://openai.com/)
 
 https://github.com/epicweb-dev/epic-stack/assets/1500684/5a3f69f2-80f6-4e62-8e9d-5285018520a2
 
-This demonstrates how to use OpenAI with the Epic Stack. It includes streaming
+This demonstrates how to use [OpenAI](https://openai.com/) with the
+[Epic Stack](https://github.com/epicweb-dev/epic-stack). It includes streaming
 from the chat completion API and enhances the note editor with a completion
 button for both the title and the content.
 
-To check out the changes, check the git commit history. The important bits are:
+To check out the changes, check
+[the git commit history](https://github.com/kentcdodds/epic-ai/commit/bf820c1c8e0232012b690558a3a5f2cc8517168b).
+The important bits are:
 
 1. Get an API key from OpenAI (you probably will need to setup billing because
    their free tier does not seem to work very well)
