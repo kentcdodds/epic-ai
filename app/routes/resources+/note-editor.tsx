@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { conform, useForm } from '@conform-to/react'
 import { getFieldsetConstraint, parse } from '@conform-to/zod'
 import { json, redirect, type DataFunctionArgs } from '@remix-run/node'
@@ -81,6 +82,8 @@ export function NoteEditor({
 	note?: { id: string; title: string; content: string }
 }) {
 	const noteEditorFetcher = useFetcher<typeof action>()
+	const [content, setContent] = React.useState(note?.content ?? '')
+	const [title, setTitle] = React.useState(note?.title ?? '')
 
 	const [form, fields] = useForm({
 		id: 'note-editor',
@@ -88,10 +91,6 @@ export function NoteEditor({
 		lastSubmission: noteEditorFetcher.data?.submission,
 		onValidate({ formData }) {
 			return parse(formData, { schema: NoteEditorSchema })
-		},
-		defaultValue: {
-			title: note?.title,
-			content: note?.content,
 		},
 		shouldRevalidate: 'onBlur',
 	})
@@ -106,22 +105,95 @@ export function NoteEditor({
 			<Field
 				labelProps={{ htmlFor: fields.title.id, children: 'Title' }}
 				inputProps={{
+					value: title,
+					onChange: event => setTitle(event.currentTarget.value),
 					...conform.input(fields.title),
 					autoComplete: 'title',
 				}}
 				errors={fields.title.errors}
 			/>
+			<Button
+				className="mb-10"
+				type="button"
+				variant="secondary"
+				size="pill"
+				onClick={event => {
+					event.preventDefault()
+
+					// @ts-expect-error we'll fix this later probably...
+					const content = event.currentTarget.form.elements.content.value
+
+					const sse = new EventSource(
+						`/resources/completions?${new URLSearchParams({ content })}`,
+					)
+
+					sse.addEventListener('message', event => {
+						setTitle(
+							prevTitle => prevTitle + event.data.replace('__NEWLINE__', '\n'),
+						)
+					})
+
+					sse.addEventListener('error', event => {
+						console.log('error: ', event)
+						sse.close()
+					})
+				}}
+			>
+				Generate Title
+			</Button>
 			<TextareaField
 				labelProps={{ htmlFor: fields.content.id, children: 'Content' }}
 				textareaProps={{
+					value: content,
+					onChange: event => setContent(event.currentTarget.value),
 					...conform.textarea(fields.content),
 					autoComplete: 'content',
 				}}
 				errors={fields.content.errors}
 			/>
+			<Button
+				className="mb-10"
+				type="button"
+				variant="secondary"
+				size="pill"
+				onClick={event => {
+					event.preventDefault()
+
+					// @ts-expect-error we'll fix this later probably...
+					const title = event.currentTarget.form.elements.title.value
+
+					const sse = new EventSource(
+						`/resources/completions?${new URLSearchParams({ title })}`,
+					)
+
+					sse.addEventListener('message', event => {
+						setContent(
+							prevContent =>
+								prevContent + event.data.replace('__NEWLINE__', '\n'),
+						)
+					})
+
+					sse.addEventListener('error', event => {
+						console.log('error: ', event)
+						sse.close()
+					})
+				}}
+			>
+				Generate Content
+			</Button>
 			<ErrorList errors={form.errors} id={form.errorId} />
 			<div className="flex justify-end gap-4">
-				<Button size="md" variant="secondary" type="reset">
+				<Button
+					size="md"
+					variant="secondary"
+					type="reset"
+					onClick={() => {
+						// because this is a controlled form, we need to reset the state
+						// because the built-in browser behavior will no longer work.
+						setContent(note?.content ?? '')
+						setTitle(note?.title ?? '')
+					}}
+				>
 					Reset
 				</Button>
 				<Button
