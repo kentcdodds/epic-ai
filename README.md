@@ -1,6 +1,6 @@
 # Epic Stack + OpenAI
 
-<video src="https://github.com/epicweb-dev/epic-stack/assets/1500684/5a3f69f2-80f6-4e62-8e9d-5285018520a2" />
+https://github.com/epicweb-dev/epic-stack/assets/1500684/5a3f69f2-80f6-4e62-8e9d-5285018520a2
 
 This demonstrates how to use OpenAI with the Epic Stack. It includes streaming
 from the chat completion API and enhances the note editor with a completion
