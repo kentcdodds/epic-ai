@@ -1,54 +1,26 @@
-<div align="center">
-  <h1 align="center"><a href="https://www.epicweb.dev/epic-stack">The Epic Stack 🚀</a></h1>
-  <strong align="center">
-    Ditch analysis paralysis and start shipping Epic Web apps.
-  </strong>
-  <p>
-    This is an opinionated project starter and reference that allows teams to
-    ship their ideas to production faster and on a more stable foundation based
-    on the experience of <a href="https://kentcdodds.com">Kent C. Dodds</a> and
-    <a href="https://github.com/epicweb-dev/epic-stack/graphs/contributors">contributors</a>.
-  </p>
-</div>
+# Epic Stack + OpenAI
 
-```sh
-npx create-remix@latest --typescript --install --template epicweb-dev/epic-stack
-```
+<video src="https://github.com/epicweb-dev/epic-stack/assets/1500684/5a3f69f2-80f6-4e62-8e9d-5285018520a2" />
 
-[![The Epic Stack](https://github.com/epicweb-dev/epic-stack/assets/1500684/1b00286c-aa3d-44b2-9ef2-04f694eb3592)](https://www.epicweb.dev/epic-stack)
+This demonstrates how to use OpenAI with the Epic Stack. It includes streaming
+from the chat completion API and enhances the note editor with a completion
+button for both the title and the content.
 
-[The Epic Stack](https://www.epicweb.dev/epic-stack)
+To check out the changes, check the git commit history. The important bits are:
 
-<hr />
+1. Get an API key from OpenAI (you probably will need to setup billing because
+   their free tier does not seem to work very well)
+2. Add the API key to the `.env` file for local testing and add a fake one to
+   `.env.example` for the repo
+3. Add the `openai` package to the `package.json` file
+4. Add a mock handler for the chat completion API (for now, we just use
+   passthrough, but if you want to mock it so this works offline, then go for
+   it).
+5. Add a resource route that will be used to stream the chat completion API
+6. Add a generate button to the note editor for both the title and content.
+   (Those will need to change to controlled inputs so that the completion can be
+   added to the input value).
+7. When the generate button is clicked, start a new `EventStream` and point it
+   to our resource route.
 
-## Watch Kent's Introduction to The Epic Stack
-
-[![screenshot of a YouTube video](https://github.com/epicweb-dev/epic-stack/assets/1500684/6beafa78-41c6-47e1-b999-08d3d3e5cb57)](https://www.youtube.com/watch?v=yMK5SVRASxM)
-
-["The Epic Stack" by Kent C. Dodds at #RemixConf 2023 💿](https://www.youtube.com/watch?v=yMK5SVRASxM)
-
-## Docs
-
-[Read the docs](https://github.com/epicweb-dev/epic-stack/blob/main/docs)
-(please 🙏).
-
-## Support
-
-- 🆘 Join the
-  [discussion on GitHub](https://github.com/epicweb-dev/epic-stack/discussions)
-  and the [KCD Community on Discord](https://kcd.im/discord).
-- 💡 Create an
-  [idea discussion](https://github.com/epicweb-dev/epic-stack/discussions/new?category=ideas)
-  for suggestions.
-- 🐛 Open a [GitHub issue](https://github.com/epicweb-dev/epic-stack/issues) to
-  report a bug.
-
-## Branding
-
-Want to talk about the Epic Stack in a blog post or talk? Great! Here are some
-assets you can use in your material:
-[EpicWeb.dev/brand](https://epicweb.dev/brand)
-
-## Thanks
-
-You rock 🪨
+[Watch me build this live on YouTube](https://www.youtube.com/watch?v=Qzpx-j-NxLY).
