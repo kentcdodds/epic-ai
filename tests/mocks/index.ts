@@ -8,6 +8,7 @@ const miscHandlers = [
 	process.env.REMIX_DEV_ORIGIN
 		? http.post(`${process.env.REMIX_DEV_ORIGIN}ping`, passthrough)
 		: null,
+	http.post('https://api.openai.com/v1/chat/completions', passthrough),
 ].filter(Boolean)
 
 export const server = setupServer(

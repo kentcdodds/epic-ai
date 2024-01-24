@@ -188,6 +188,8 @@ export function NoteEditor({
 }) {
 	const actionData = useActionData<typeof action>()
 	const isPending = useIsPending()
+	const [content, setContent] = useState(note?.content ?? '')
+	const [title, setTitle] = useState(note?.title ?? '')
 
 	const [form, fields] = useForm({
 		id: 'note-editor',
@@ -197,8 +199,8 @@ export function NoteEditor({
 			return parse(formData, { schema: NoteEditorSchema })
 		},
 		defaultValue: {
-			title: note?.title ?? '',
-			content: note?.content ?? '',
+			title,
+			content,
 			images: note?.images ?? [{}],
 		},
 	})
@@ -226,16 +228,75 @@ export function NoteEditor({
 						inputProps={{
 							autoFocus: true,
 							...conform.input(fields.title, { ariaAttributes: true }),
+							value: title,
+							onChange: e => setTitle(e.currentTarget.value),
 						}}
 						errors={fields.title.errors}
 					/>
+					<Button
+						className="mb-10"
+						type="button"
+						variant="secondary"
+						size="pill"
+						onClick={event => {
+							event.preventDefault()
+
+							const sse = new EventSource(
+								`/resources/completions?${new URLSearchParams({ content })}`,
+							)
+
+							setTitle('')
+
+							sse.addEventListener('message', event => {
+								setTitle(
+									prevTitle => prevTitle + event.data.replaceAll('␣', '\n'),
+								)
+							})
+
+							sse.addEventListener('error', event => {
+								console.log('error: ', event)
+								sse.close()
+							})
+						}}
+					>
+						Generate Title
+					</Button>
 					<TextareaField
 						labelProps={{ children: 'Content' }}
 						textareaProps={{
 							...conform.textarea(fields.content, { ariaAttributes: true }),
+							value: content,
+							onChange: e => setContent(e.currentTarget.value),
 						}}
 						errors={fields.content.errors}
 					/>
+					<Button
+						className="mb-10"
+						type="button"
+						variant="secondary"
+						size="pill"
+						onClick={event => {
+							event.preventDefault()
+							setContent('')
+
+							const sse = new EventSource(
+								`/resources/completions?${new URLSearchParams({ title })}`,
+							)
+
+							sse.addEventListener('message', event => {
+								setContent(
+									prevContent => prevContent + event.data.replaceAll('␣', '\n'),
+								)
+							})
+
+							sse.addEventListener('error', event => {
+								console.log('error: ', event)
+								sse.close()
+							})
+						}}
+					>
+						Generate Content
+					</Button>
 					<div>
 						<Label>Images</Label>
 						<ul className="flex flex-col gap-4">
@@ -271,7 +332,17 @@ export function NoteEditor({
 				<ErrorList id={form.errorId} errors={form.errors} />
 			</Form>
 			<div className={floatingToolbarClassName}>
-				<Button form={form.id} variant="destructive" type="reset">
+				<Button
+					form={form.id}
+					variant="destructive"
+					type="reset"
+					onClick={() => {
+						// because this is a controlled form, we need to reset the state
+						// because the built-in browser behavior will no longer work.
+						setContent(note?.content ?? '')
+						setTitle(note?.title ?? '')
+					}}
+				>
 					Reset
 				</Button>
 				<StatusButton
