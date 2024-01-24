@@ -1,6 +1,6 @@
 # [Epic Stack](https://github.com/epicweb-dev/epic-stack) + [OpenAI](https://openai.com/)
 
-https://github.com/epicweb-dev/epic-stack/assets/1500684/5a3f69f2-80f6-4e62-8e9d-5285018520a2
+https://github.com/kentcdodds/epic-ai/assets/1500684/376ac2f7-5bca-4049-bf84-b109abb23feb
 
 This demonstrates how to use [OpenAI](https://openai.com/) with the
 [Epic Stack](https://github.com/epicweb-dev/epic-stack). It includes streaming
